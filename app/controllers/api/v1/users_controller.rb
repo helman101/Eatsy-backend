@@ -1,4 +1,4 @@
-class UsersController < ApplicationController::API
+class UsersController < ApplicationController
   def index
     @users = User.all
     if @users
@@ -39,6 +39,26 @@ class UsersController < ApplicationController::API
       render json: {
         status: 500,
         errors: @user.errors.full_messages
+      }
+    end
+  end
+
+  def login
+    @user = User.find_by(email: user_params[:email])
+    if @user
+      if @user.authenticate(params[:password])
+        render json: {
+          status: :ok
+          user: { id: @user.id, name: @user.name, email: @user.email }
+        }
+      else
+        render json: {
+          errors: ['Wrong Password']
+        }
+      end
+    else
+      render json: {
+        errors: ['User doesn\'t exist']
       }
     end
   end

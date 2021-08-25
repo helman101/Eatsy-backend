@@ -1,4 +1,3 @@
-
 class OrdersController < ApplicationController::API
   def index
     @orders = Order.all
