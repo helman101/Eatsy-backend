@@ -1,4 +1,4 @@
 class Food < ApplicationRecord
-  has_many :orders, class_name: 'Order', foreign_key: 'food_id'
+  has_many :orders
   validates_presence_of :name, :price, :description
 end
