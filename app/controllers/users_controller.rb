@@ -14,15 +14,16 @@ class UsersController < ApplicationController
   end
 
   def show
-    @user = User.find(params[:id])
-    if @user
+    begin 
+      @user = User.find(params[:id])
+    rescue
       render json: {
-        user: @user
-      }
+        errors: ['user not found']
+      },
+      status: :not_found
     else
       render json: {
-        status: 500,
-        errors: ['user not found']
+        user: @user
       }
     end
   end
@@ -30,25 +31,23 @@ class UsersController < ApplicationController
   def create
     @user = User.new(user_params)
     if @user.save
-      login!
       render json: {
-        status: :created,
         user: @user
-      }
+      },
+      status: :created
     else
       render json: {
-        status: 500,
         errors: @user.errors.full_messages
-      }
+      },
+      status: :unprocessable_entity
     end
   end
 
   def login
     @user = User.find_by(email: user_params[:email])
     if @user
-      if @user.authenticate(params[:password])
+      if @user.authenticate(user_params['password'])
         render json: {
-          status: :ok
           user: { id: @user.id, name: @user.name, email: @user.email }
         }
       else
@@ -66,6 +65,6 @@ class UsersController < ApplicationController
   private
 
   def user_params
-    params.require(:user).permit(:email, :password, :password_confirmation)
+    params.require(:user).permit(:name, :email, :password, :password_confirmation)
   end
 end
