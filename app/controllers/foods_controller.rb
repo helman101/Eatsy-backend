@@ -1,28 +1,44 @@
-class FoodsController < ApplicationController::API
+class FoodsController < ApplicationController
   def index
-    @orders = Foods.all
-    render json: { status: 'SUCCESS', message: 'Loaded foods', data: @foods }, status: :ok
+    @foods = Food.all
+    render json: { message: 'Loaded foods', data: @foods }
   end
 
   def show
-    @food = Food.find(params[:id])
-    render json: { status: 'SUCCESS', message: 'Loaded food', data: @food }, status: :ok
+    begin 
+      @food = Food.find(params[:id])
+    rescue
+      render json: {
+        errors: ['food not found']
+      },
+      status: :not_found
+    else
+      render json: { message: 'Loaded food', data: @food }
+    end
   end
 
   def create
     @food = Food.new(food_params)
     if @food.save
-      render json: { status: 'SUCCESS', message: 'Saved food', data: @order }, status: :ok
+      render json: { message: 'Saved food', data: @food }, status: :created
     else
-      render json: { status: 'ERROR', message: 'food not saved', data: @food.errors },
-             status: :unprocessable_entry
+      render json: { message: 'food not saved', data: @food.errors },
+             status: :unprocessable_entity
     end
   end
 
   def destroy
-    @food = Food.find(params[:id])
-    @food.destroy
-    render json: { status: 'SUCCESS', message: 'Deleted order', data: @food }, status: :ok
+    begin
+      @food = Food.find(params[:id])
+    rescue
+      render json: {
+        errors: ['food not found']
+      },
+      status: :not_found
+    else
+      @food.destroy
+      render json: { message: 'Deleted food'}
+    end
   end
   
   private
