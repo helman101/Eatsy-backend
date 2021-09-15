@@ -1,28 +1,44 @@
-class OrdersController < ApplicationController::API
+class OrdersController < ApplicationController
   def index
     @orders = Order.all
-    render json: { status: 'SUCCESS', message: 'Loaded orders', data: @orders }, status: :ok
+    render json: { message: 'Loaded orders', data: @orders }
   end
   
   def show
-    @order = Order.find(params[:id])
-    render json: { status: 'SUCCESS', message: 'Loaded order', data: @order }, status: :ok
+    begin 
+      @order = Order.find(params[:id])
+    rescue
+      render json: {
+        errors: ['order not found']
+      },
+      status: :not_found
+    else
+      render json: { message: 'Loaded order', data: @order }
+    end
   end
 
   def create
     @order = Order.new(order_params)
     if @order.save
-      render json: { status: 'SUCCESS', message: 'Saved order', data: @order }, status: :ok
+      render json: { message: 'Saved order', data: @order }, status: :created
     else
-      render json: { status: 'ERROR', message: 'order not saved', data: @order.errors },
-             status: :unprocessable_entry
+      render json: { message: 'order not saved', data: @order.errors },
+             status: :unprocessable_entity
     end
   end
 
   def destroy
-    @order = Order.find(params[:id])
-    @order.destroy
-    render json: { status: 'SUCCESS', message: 'Deleted order', data: @order }, status: :ok
+    begin
+      @order = Order.find(params[:id])
+    rescue
+      render json: {
+        errors: ['order not found']
+      },
+      status: :not_found
+    else
+      @order.destroy
+      render json: { message: 'Deleted order'}
+    end
   end
 
   private
