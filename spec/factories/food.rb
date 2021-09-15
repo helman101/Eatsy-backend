@@ -1,7 +1,7 @@
 FactoryBot.define do
   factory :food do
-    name { Faker::Food.unique.dish }
+    name { Faker::Food.dish }
     price { 20 }
-    description { Faker::Food.unique.description }
+    description { Faker::Food.description }
   end
 end

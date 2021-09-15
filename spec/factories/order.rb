@@ -1,7 +1,7 @@
 FactoryBot.define do
   factory :order do
-    customer_id { 1 }
-    food_id { 1 }
+    customer_id { nil }
+    food_id { nil }
     delivered { false }
   end
 end
