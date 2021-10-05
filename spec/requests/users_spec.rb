@@ -45,9 +45,7 @@ RSpec.describe 'Users', type: :request do
   end
 
   describe 'POST /users' do
-    let(:correct_attributes) do
-      { user: { name: 'Alfred', email: 'admin@test.com', password: '1234', password_confirmation: '1234' } }
-    end
+    let(:correct_attributes) { { name: 'Alfred', email: 'admin@test.com', password: '1234', password_confirmation: '1234' } }
 
     context 'when the user is valid' do
       before { post '/users', params: correct_attributes }
@@ -78,7 +76,7 @@ RSpec.describe 'Users', type: :request do
   describe 'GET /login' do
     let(:user_email) { users.first.email }
     let(:user_password) { users.first.password }
-    before { get "/login?#{{user: { email: user_email, password: user_password }}.to_query}" }
+    before { get "/login?#{{ email: user_email, password: user_password }.to_query}" }
 
     context 'when the user exist' do
       it 'returns the user' do
