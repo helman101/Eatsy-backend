@@ -19,6 +19,7 @@ class FoodsController < ApplicationController
 
   def create
     @food = Food.new(food_params)
+
     if @food.save
       render json: { message: 'Saved food', data: @food }, status: :created
     else
@@ -44,6 +45,6 @@ class FoodsController < ApplicationController
   private
 
   def food_params
-    params.require(:food).permit(:name, :price, :description)
+    params.require(:food).permit(:name, :price, :description, :image)
   end
 end
